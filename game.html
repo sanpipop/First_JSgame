@@ -25,11 +25,14 @@
 			align-items: center;
 		}
 
-		#score-text,#best-score-text {
+		#score-text,
+		#best-score-text {
 			font-size: 20px;
 			margin-right: 10px;
 		}
-		#score,#best-score {
+
+		#score,
+		#best-score {
 			font-size: 30px;
 			margin-right: 10px;
 		}
@@ -135,18 +138,58 @@
 			context.fillStyle = ship.color;
 			context.fill();
 
+
 			for (var i = 0; i < enemies.length; i++) {
 				context.beginPath();
 				context.arc(enemies[i].x, enemies[i].y, enemies[i].radius, 0, 2 * Math.PI, false);
 				context.fillStyle = 'blue';
 				context.fill();
 			}
+			//orangespawn
+			drawOrangeCircles();
 			//enemyspawn
 			drawBrownCircles();
 			lastStamp = currentStamp;
 		}
 		window.requestAnimationFrame(draw);
 	}
+	//draworange
+	var orangeCircles = [];
+	function createOrangeCircle() {
+		var x = Math.random() * canvas.width;
+		var y = Math.random() * canvas.height;
+		var angle = Math.random() * 2 * Math.PI;
+
+		return {
+			x: x,
+			y: y,
+			radius: 6,
+			angle: angle
+		};
+	}
+	function drawOrangeCircles() {
+		var context = canvas.getContext('2d');
+		context.fillStyle = 'orange';
+
+		for (var i = 0; i < orangeCircles.length; i++) {
+			context.beginPath();
+			context.arc(orangeCircles[i].x, orangeCircles[i].y, orangeCircles[i].radius, 0, 2 * Math.PI, false);
+			context.fill();
+
+
+			if (orangeCircles[i].x < 0 || orangeCircles[i].x > canvas.width || orangeCircles[i].y < 0 || orangeCircles[i].y > canvas.height) {
+				// Respawn if the circle is out of bounds
+				orangeCircles[i] = createOrangeCircle();
+			}
+
+			// Check hit with the ship
+			if (distance(orangeCircles[i].x, orangeCircles[i].y, ship.x, ship.y) <= ship.radius + orangeCircles[i].radius) {
+				ship.v += 50;  // เพิ่มความเร็วของเรือ
+				orangeCircles[i] = createOrangeCircle();
+			}
+		}
+	}
+
 	//drawenemy
 	function drawBrownCircles() {
 		var context = canvas.getContext('2d');
@@ -246,7 +289,11 @@
 		gameRunning = true;
 		score = 0;
 		ship.radius = 5;
+		ship.v = 300;
 		document.getElementById('score').innerHTML = '' + score;
+		for (var i = 0; i < 5; i++) {
+        orangeCircles.push(createOrangeCircle());
+    }
 	}
 
 	canvas.addEventListener('mousemove', function (evt) {
@@ -291,13 +338,11 @@
 
 		animateJump();
 	}
-
 	function onClick(x, y) {
 		if (!jumping) {
 			shipJump();
 		}
 	}
-
 
 	class Enemy {
 		constructor() {
@@ -313,7 +358,6 @@
 			return this.lifetime > 0;
 		}
 	}
-
 </script>
 
 </html>
