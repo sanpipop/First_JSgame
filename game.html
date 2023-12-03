@@ -105,7 +105,7 @@
 		}
 		enemies.push(new Enemy());
 	}, 1000);
-
+	//drawgame
 	function draw() {
 		if (gameRunning) {
 			var currentStamp = new Date().getTime();
@@ -131,11 +131,73 @@
 				context.fillStyle = 'blue';
 				context.fill();
 			}
-
+			//bc spawn
+			drawBrownCircles();
 			lastStamp = currentStamp;
 		}
 		window.requestAnimationFrame(draw);
 	}
+	//drawbrown circle
+	function drawBrownCircles() {
+		var context = canvas.getContext('2d');
+		context.fillStyle = 'brown';
+
+		for (var i = 0; i < brownCircles.length; i++) {
+			context.beginPath();
+			context.arc(brownCircles[i].x, brownCircles[i].y, brownCircles[i].radius, 0, 2 * Math.PI, false);
+			context.fill();
+			brownCircles[i].x += brownCircles[i].speed * Math.cos(brownCircles[i].angle);
+			brownCircles[i].y += brownCircles[i].speed * Math.sin(brownCircles[i].angle);
+
+			if (brownCircles[i].x < 0 || brownCircles[i].x > canvas.width || brownCircles[i].y < 0 || brownCircles[i].y > canvas.height) {
+				// Respawn if the circle is out of bounds
+				brownCircles[i] = createBrownCircle();
+			}
+		}
+	}
+
+	function createBrownCircle() {
+		var side = Math.floor(Math.random() * 4); // Determine from which side the circle will start
+		var x, y, angle;
+
+		switch (side) {
+			case 0: // Top
+				x = Math.random() * canvas.width;
+				y = 0;
+				angle = Math.random() * Math.PI / 2; // Angle between 0 and 90 degrees
+				break;
+			case 1: // Right
+				x = canvas.width;
+				y = Math.random() * canvas.height;
+				angle = Math.random() * Math.PI / 2 + Math.PI / 2; // Angle between 90 and 180 degrees
+				break;
+			case 2: // Bottom
+				x = Math.random() * canvas.width;
+				y = canvas.height;
+				angle = Math.random() * Math.PI / 2 + Math.PI; // Angle between 180 and 270 degrees
+				break;
+			case 3: // Left
+				x = 0;
+				y = Math.random() * canvas.height;
+				angle = Math.random() * Math.PI / 2 + 3 * Math.PI / 2; // Angle between 270 and 360 degrees
+				break;
+		}
+
+		return {
+			x: x,
+			y: y,
+			radius: 10,
+			speed: 2 + Math.random() * 3, // Speed between 2 and 5
+			angle: angle
+		};
+	}
+
+	var brownCircles = [];
+	// Initialize brown circles
+	for (var i = 0; i < 5; i++) {
+		brownCircles.push(createBrownCircle());
+	}
+
 	window.requestAnimationFrame(draw);
 
 	function isHit() {
@@ -179,7 +241,7 @@
 
 	var jumping = false;
 	var jumpStartTime;
-	var jumpDuration = 40; 
+	var jumpDuration = 40;
 	var jumpDistance = 40;
 	function shipJump() {
 		jumping = true;
@@ -228,7 +290,7 @@
 			return this.lifetime > 0;
 		}
 	}
-	
+
 </script>
 
 </html>
