@@ -25,13 +25,13 @@
 			align-items: center;
 		}
 
-		#score-text {
+		#score-text,#best-score-text {
 			font-size: 20px;
 			margin-right: 10px;
 		}
-
-		#score {
+		#score,#best-score {
 			font-size: 30px;
+			margin-right: 10px;
 		}
 	</style>
 </head>
@@ -41,12 +41,21 @@
 	<div id="score-container">
 		<div id="score-text">Your Score:</div>
 		<div id="score">0</div>
+		<div id="best-score-text">Best Score:</div>
+		<div id="best-score">0</div>
 	</div>
 	<canvas style="background-color: rgb(155, 237, 193);" id="paper"></canvas>
 </body>
 
 <script type="text/javascript">
 	var gameOver = false;
+	var bestScore = 0;
+	function updateBestScore() {
+		if (score > bestScore) {
+			bestScore = score;
+			document.getElementById('best-score').innerHTML = '' + bestScore;
+		}
+	}
 	var canvas = document.getElementById("paper");
 	var targetX = canvas.width / 2;
 	var targetY = canvas.height / 2;
@@ -194,7 +203,7 @@
 	}
 
 	var brownCircles = [];
-	
+	// Initialize brown circles
 	for (var i = 0; i < 5; i++) {
 		brownCircles.push(createBrownCircle());
 	}
@@ -202,23 +211,23 @@
 	window.requestAnimationFrame(draw);
 
 	function isHit() {
-		// Check Hit with blue circles
+		// Check hit with blue enemies
 		for (var i = 0; i < enemies.length; i++) {
 			if (distance(enemies[i].x, enemies[i].y, ship.x, ship.y) <= ship.radius + enemies[i].radius) {
 				enemies[i] = new Enemy();
-				
+				ship.radius += 2;
 				return true;
 			}
 		}
 
-		// Check Hit with brown circles
+		// Check hit with brown circles
 		for (var i = 0; i < brownCircles.length; i++) {
 			if (distance(brownCircles[i].x, brownCircles[i].y, ship.x, ship.y) <= ship.radius + brownCircles[i].radius) {
 				gameRunning = false; // Game over when hit with a brown circle
+				updateBestScore()
 				return false;
 			}
 		}
-
 		return false;
 	}
 
@@ -236,6 +245,7 @@
 		ship.y = canvas.height / 2;
 		gameRunning = true;
 		score = 0;
+		ship.radius = 5;
 		document.getElementById('score').innerHTML = '' + score;
 	}
 
