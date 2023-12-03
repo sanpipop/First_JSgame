@@ -1,15 +1,50 @@
 <html>
 
 <head>
-	<title></title>
+	<title>Gamefordek</title>
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden;
+			
+		}
+
+		.button {
+			background-color: #ff6565;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+		}
+
+		#score-container {
+			display: flex;
+			align-items: center;
+		}
+
+		#score-text {
+			font-size: 20px;
+			margin-right: 10px;
+		}
+
+		#score {
+			font-size: 30px;
+		}
+	</style>
 </head>
 
 <body>
-	<button onclick="startGame()">New</button>
-	<div id="score">0</div>
-	<canvas style="background-color: rgb(178, 174, 235);" id="paper" width="600" height="600">
-	</canvas>
+	<button onclick="startGame()" class="button">start game</button>
+	<div id="score-container">
+		<div id="score-text">Your Score:</div>
+		<div id="score">0</div>
+	</div>
+	<canvas style="background-color: rgb(155, 237, 193);" id="paper"></canvas>
 </body>
+
 <script type="text/javascript">
 	var canvas = document.getElementById("paper");
 	var targetX = canvas.width / 2;
@@ -25,7 +60,7 @@
 			var diffy = y - this.y;
 			var diffx = x - this.x;
 			var zeta = Math.atan(Math.abs((y - this.y) / (x - this.x)));
-			var dy = diffy < 0 ? - 1 : 1;
+			var dy = diffy < 0 ? -1 : 1;
 			var dx = diffx < 0 ? -1 : 1;
 			if (!isNaN(zeta)) {
 				this.x += Math.cos(zeta) * st * dx;
@@ -46,6 +81,17 @@
 
 	var lastStamp = 0;
 	var score = 0;
+
+	function adjustCanvasSize() {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		targetX = canvas.width / 2;
+		targetY = canvas.height / 2;
+	}
+
+	// Call adjustCanvasSize initially and on window resize
+	adjustCanvasSize();
+	window.addEventListener('resize', adjustCanvasSize);
 
 	setInterval(function () {
 		var deadEnemyIndices = [];
