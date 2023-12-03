@@ -6,7 +6,7 @@
 		body {
 			margin: 0;
 			overflow: hidden;
-			
+
 		}
 
 		.button {
@@ -89,7 +89,7 @@
 		targetY = canvas.height / 2;
 	}
 
-	// Call adjustCanvasSize initially and on window resize
+
 	adjustCanvasSize();
 	window.addEventListener('resize', adjustCanvasSize);
 
@@ -177,6 +177,43 @@
 		onClick(x, y);
 	}, false);
 
+	var jumping = false;
+	var jumpStartTime;
+	var jumpDuration = 40; 
+	var jumpDistance = 40;
+	function shipJump() {
+		jumping = true;
+		jumpStartTime = new Date().getTime();
+
+		//หามุมระหว่างตำแหน่งเรือปัจจุบันกับเมาส์
+		var angle = Math.atan2(targetY - ship.y, targetX - ship.x);
+
+		//อนิเมชันเรือกระโดด
+		function animateJump() {
+			var currentTime = new Date().getTime();
+			var passedTime = currentTime - jumpStartTime;
+
+			if (passedTime < jumpDuration) {
+				// เปลี่ยนตำแหน่งเรือ
+				ship.x += (jumpDistance / jumpDuration) * Math.cos(angle) * passedTime;
+				ship.y += (jumpDistance / jumpDuration) * Math.sin(angle) * passedTime;
+
+				requestAnimationFrame(animateJump);
+			} else {
+				jumping = false;
+			}
+		}
+
+		animateJump();
+	}
+
+	function onClick(x, y) {
+		if (!jumping) {
+			shipJump();
+		}
+	}
+
+
 	class Enemy {
 		constructor() {
 			this.x = Math.floor(Math.random() * canvas.width);
@@ -191,6 +228,7 @@
 			return this.lifetime > 0;
 		}
 	}
+	
 </script>
 
 </html>
