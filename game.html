@@ -10,7 +10,7 @@
 		}
 
 		.button {
-			background-color: #ff6565;
+			background-color: #fd6e6e;
 			border: none;
 			color: white;
 			padding: 15px 32px;
@@ -18,23 +18,34 @@
 			text-decoration: none;
 			display: inline-block;
 			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.button:hover {
+			background-color: #f32929;
 		}
 
 		#score-container {
 			display: flex;
 			align-items: center;
+			margin-top: 20px;
+			text-align: center;
 		}
 
-		#score-text,
-		#best-score-text {
+		#score-text,#best-score-text {
 			font-size: 20px;
 			margin-right: 10px;
+			font-family: 'Arial', sans-serif;
+			color: #333;
 		}
 
-		#score,
-		#best-score {
+		#score,#best-score {
 			font-size: 30px;
 			margin-right: 10px;
+			font-family: 'Arial', sans-serif;
+			color: #ff6565;
+			font-weight: bold;
 		}
 	</style>
 </head>
@@ -267,7 +278,7 @@
 			if (distance(brownCircles[i].x, brownCircles[i].y, ship.x, ship.y) <= ship.radius + brownCircles[i].radius) {
 				gameRunning = false; // Game over when hit with a brown circle
 				updateBestScore()
-				alert("Game Over !!! Your score is"+ score)
+				alert("Game Over !!! Your score is " + score)
 				return false;
 			}
 		}
@@ -293,8 +304,8 @@
 		orangeCircles = [];
 		document.getElementById('score').innerHTML = '' + score;
 		for (var i = 0; i < 5; i++) {
-        orangeCircles.push(createOrangeCircle());
-    }
+			orangeCircles.push(createOrangeCircle());
+		}
 	}
 
 	canvas.addEventListener('mousemove', function (evt) {
