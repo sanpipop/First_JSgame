@@ -46,6 +46,7 @@
 </body>
 
 <script type="text/javascript">
+	var gameOver = false;
 	var canvas = document.getElementById("paper");
 	var targetX = canvas.width / 2;
 	var targetY = canvas.height / 2;
@@ -54,7 +55,7 @@
 		y: 0,
 		radius: 5,
 		color: 'red',
-		v: 100,
+		v: 300,
 		moveTo: function (x, y, ms) {
 			var st = this.v * ms / 1000;
 			var diffy = y - this.y;
@@ -131,13 +132,13 @@
 				context.fillStyle = 'blue';
 				context.fill();
 			}
-			//bc spawn
+			//enemyspawn
 			drawBrownCircles();
 			lastStamp = currentStamp;
 		}
 		window.requestAnimationFrame(draw);
 	}
-	//drawbrown circle
+	//drawenemy
 	function drawBrownCircles() {
 		var context = canvas.getContext('2d');
 		context.fillStyle = 'brown';
@@ -193,7 +194,7 @@
 	}
 
 	var brownCircles = [];
-	// Initialize brown circles
+	
 	for (var i = 0; i < 5; i++) {
 		brownCircles.push(createBrownCircle());
 	}
@@ -201,14 +202,26 @@
 	window.requestAnimationFrame(draw);
 
 	function isHit() {
+		// Check Hit with blue circles
 		for (var i = 0; i < enemies.length; i++) {
 			if (distance(enemies[i].x, enemies[i].y, ship.x, ship.y) <= ship.radius + enemies[i].radius) {
 				enemies[i] = new Enemy();
+				
 				return true;
 			}
 		}
+
+		// Check Hit with brown circles
+		for (var i = 0; i < brownCircles.length; i++) {
+			if (distance(brownCircles[i].x, brownCircles[i].y, ship.x, ship.y) <= ship.radius + brownCircles[i].radius) {
+				gameRunning = false; // Game over when hit with a brown circle
+				return false;
+			}
+		}
+
 		return false;
 	}
+
 
 	function distance(x1, y1, x2, y2) {
 		return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
